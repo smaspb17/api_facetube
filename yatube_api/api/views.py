@@ -4,10 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from django.contrib.auth import get_user_model
 
-from posts.models import Follow, Post, Group
+from posts.models import Post, Group
 from .serializers import (FollowSerializer, PostSerializer, GroupSerializer,
                           CommentSerializer)
-from .permissions import IsAuthorPost, IsAuthorComment
+from .permissions import IsAuthorPostOrComment
 
 User = get_user_model()
 
@@ -15,7 +15,7 @@ User = get_user_model()
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthorPost, )
+    permission_classes = (IsAuthorPostOrComment, )
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -29,7 +29,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorComment, )
+    permission_classes = (IsAuthorPostOrComment, )
 
     def perform_create(self, serializer):
         serializer.save(
@@ -48,11 +48,10 @@ class FollowViewSet(mixins.CreateModelMixin,
     permission_classes = (IsAuthenticated, )
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
-    queryset = Follow.objects.all()
 
     def get_queryset(self):
         """Возвращает queryset c подписками для текущего пользователя."""
-        return Follow.objects.filter(user=self.request.user)
+        return self.request.user.follower.all()
 
     def perform_create(self, serializer: FollowSerializer):
         """Создает подписку, где подписчиком является текущий пользователь."""
