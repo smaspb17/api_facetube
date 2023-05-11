@@ -1,8 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins, filters
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
-from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
 
 from posts.models import Post, Group
 from .serializers import (FollowSerializer, PostSerializer, GroupSerializer,
