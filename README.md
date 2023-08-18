@@ -102,7 +102,7 @@ python manage.py runserver
 **АВТОР:** Марат
 
 
-**ЛИЦЕНЗИЯ:** То ли еще будет
+**ЛИЦЕНЗИЯ:** Apache License 2.0
 
 
 **КОНТАКТЫ:** smaspb17@yandex.ru
